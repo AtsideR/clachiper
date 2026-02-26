@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Kriptografi Klasik - Undip 2025</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>CALCHIPER</h1>
+        <h2>by Redista Rakha Izza</h2>
+        <p></p>
+        
+        <label>Pilih Algoritma:</label>
+        <select id="algo">
+            <option value="caesar">Caesar Cipher</option>
+            <option value="vigenere">Vigenere Cipher</option>
+            <option value="affine">Affine Cipher</option>
+            <option value="playfair">Playfair Cipher</option>
+            <option value="hill">Hill Cipher</option>
+            <option value="enigma">Enigma (Rotor)</option>
+        </select>
+
+        <textarea id="inputText" placeholder="Masukkan Plainteks/Cipherteks..."></textarea>
+        
+        <div id="keyContainer">
+            <label>Input Kunci:</label>
+            
+            <div id="standardKey">
+                <input type="text" id="key" placeholder="Masukkan Kunci">
+            </div>
+
+            <div id="affineKey" style="display:none;">
+                <div style="display:flex; gap:10px;">
+                    <input type="number" id="affineA" placeholder="Nilai a">
+                    <input type="number" id="affineB" placeholder="Nilai b">
+                </div>
+            </div>
+
+            <div id="hillKey" style="display:none;">
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:5px; max-width: 210px; margin-top:10px;">
+                    <input type="number" id="h1" class="m-cell" placeholder="k1"> <input type="number" id="h2" class="m-cell" placeholder="k2"> <input type="number" id="h3" class="m-cell" placeholder="k3">
+                    <input type="number" id="h4" class="m-cell" placeholder="k4"> <input type="number" id="h5" class="m-cell" placeholder="k5"> <input type="number" id="h6" class="m-cell" placeholder="k6">
+                    <input type="number" id="h7" class="m-cell" placeholder="k7"> <input type="number" id="h8" class="m-cell" placeholder="k8"> <input type="number" id="h9" class="m-cell" placeholder="k9">
+                </div>
+            </div>
+
+            <div id="enigmaKey" style="display:none;">
+                <div id="rotorContainer">
+                    <div class="rotor-item" style="display:flex; gap:10px; margin-bottom:5px; align-items:center;">
+                        <span class="rotor-label" style="font-weight:bold; min-width:30px;">K0:</span>
+                        <input type="text" class="rotor-map" placeholder="Mapping (Contoh: CDEAB)" value="CDEAB" style="flex-grow:1; padding:5px;">
+                    </div>
+                </div>
+                <button type="button" onclick="tambahRotor()" class="btn-add">+ Tambah Rotor</button>
+            </div>
+
+            <small id="keyHint">Kunci: Angka pergeseran (0-25)</small>
+        </div>
+        
+        <div class="buttons">
+            <button onclick="proses('enkripsi')" class="btn-encrypt">Enkripsi</button>
+            <button onclick="proses('dekripsi')" class="btn-decrypt">Dekripsi</button>
+        </div>
+
+        <h3>Hasil:</h3>
+        <div id="outputText" class="result"></div>
+    </div>
+
+    <script src="js/caesar.js"></script>
+    <script src="js/vigenere.js"></script>
+    <script src="js/affine.js"></script>
+    <script src="js/playfair.js"></script>
+    <script src="js/hill.js"></script>
+    <script src="js/enigma.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
