@@ -1,33 +1,47 @@
+/**
+ * enigma.js - Implementasi Rotor Cipher Sederhana
+ * Memperbaiki masalah pengulangan hasil enkripsi untuk input karakter yang panjang.
+ */
 function enigmaCipher(text, rotorMaps, mode) {
     let res = "";
+    // Membersihkan teks: hanya mengambil huruf A-Z
     let cleanText = text.toUpperCase().replace(/[^A-Z]/g, '');
     
     for (let i = 0; i < cleanText.length; i++) {
         let char = cleanText[i];
-        let rotorIdx = i % rotorMaps.length; // Menentukan K0, K1, dst [cite: 591, 602]
+        
+        // Memilih rotor (K0, K1, K2...) secara siklik berdasarkan urutan karakter ke-i
+        let rotorIdx = i % rotorMaps.length; 
         let map = rotorMaps[rotorIdx].toUpperCase().replace(/[^A-Z]/g, '');
         
-        if (map.length === 0) continue;
+        if (map.length === 0) {
+            res += char;
+            continue;
+        }
 
-        let charPos = char.charCodeAt(0) - 65; // Posisi asli A=0, B=1, ... R=17
+        // Mendapatkan posisi alfabet asli (A=0, B=1, C=2, ..., Z=25)
+        let charPos = char.charCodeAt(0) - 65; 
         
         if (mode === 'enkripsi') {
-            // Jika posisi huruf (misal R=17) > panjang rotor (misal 5), gunakan modulo
-            let mappedIdx = charPos % map.length; // 17 mod 5 = 2 
+            /** * LOGIKA BERULANG: 
+             * Jika posisi huruf (misal R=17) lebih besar dari panjang rotor (misal 5),
+             * gunakan operasi modulo untuk menentukan indeks mapping yang digunakan.
+             * Contoh: 17 mod 5 = 2. Maka huruf 'R' dipetakan ke karakter indeks ke-2 di mapping.
+             */
+            let mappedIdx = charPos % map.length; 
             res += map[mappedIdx];
         } else {
-            // Dekripsi: Mencari karakter di mapping dan mengembalikan ke alfabet standar
-            let found = false;
-            // Mencari semua kemungkinan posisi karena adanya sistem pengulangan (modulo)
-            for (let j = 0; j < map.length; j++) {
-                if (map[j] === char) {
-                    // Karena berulang, kita ambil representasi alfabet pertama yang cocok
-                    res += String.fromCharCode(j + 65);
-                    found = true;
-                    break;
-                }
+            /** * DEKRIPSI:
+             * Mencari karakter cipherteks di dalam mapping. 
+             * Karena satu karakter mapping bisa mewakili banyak huruf alfabet (akibat modulo),
+             * kita mengembalikan representasi alfabet pertama yang cocok (indeks terkecil).
+             */
+            let foundIdx = map.indexOf(char);
+            if (foundIdx !== -1) {
+                res += String.fromCharCode(foundIdx + 65);
+            } else {
+                res += char;
             }
-            if (!found) res += char;
         }
     }
     return res;
