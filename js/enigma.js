@@ -1,45 +1,48 @@
 /**
- * enigma.js - Implementasi Rotor Cipher Sederhana (Slide 17)
- * Mendukung pemrosesan siklik/berulang untuk Enkripsi dan Dekripsi.
+ * enigma.js - Implementasi Rotor Cipher Sederhana (Slide 17) [cite: 591, 597]
+ * Diperbaiki untuk menangani karakter alfabet yang indeksnya melebihi panjang kunci rotor.
  */
 function enigmaCipher(text, rotorMaps, mode) {
     let res = "";
-    // Hanya memproses huruf A-Z [cite: 57]
+    // Membersihkan teks: hanya memproses huruf alfabet A-Z [cite: 57, 70]
     let cleanText = text.toUpperCase().replace(/[^A-Z]/g, '');
     
     for (let i = 0; i < cleanText.length; i++) {
         let char = cleanText[i];
         
-        // Pilih rotor secara bergantian: K0, K1, K2, lalu kembali ke K0 
+        /** * Pemilihan rotor (Ki) dilakukan secara berurutan (siklik) 
+         * berdasarkan posisi karakter ke-i dalam teks[cite: 591, 592].
+         */
         let rotorIdx = i % rotorMaps.length; 
         let map = rotorMaps[rotorIdx].toUpperCase().replace(/[^A-Z]/g, '');
         
-        // Jika rotor kosong, lewati karakter tersebut
         if (map.length === 0) {
             res += char;
             continue;
         }
 
         if (mode === 'enkripsi') {
-            // ENKRIPSI: Ambil posisi alfabet asli (A=0, B=1, dst)
+            /**
+             * ENKRIPSI:
+             * Karakter alfabet (A=0, B=1, ... Z=25) dipetakan ke kunci rotor.
+             * Jika posisi alfabet > panjang kunci, dilakukan operasi modulo[cite: 591].
+             */
             let charPos = char.charCodeAt(0) - 65; 
-            
-            // Logika Berulang: Gunakan modulo jika posisi > panjang rotor
             let mappedIdx = charPos % map.length; 
             res += map[mappedIdx];
         } else {
-            // DEKRIPSI: Cari posisi karakter cipherteks di dalam mapping rotor
+            /**
+             * DEKRIPSI:
+             * Mencari posisi karakter cipherteks di dalam kunci rotor.
+             * Hasilnya dikembalikan ke urutan alfabet standar (A, B, C, dst).
+             */
             let foundIdx = map.indexOf(char);
             
             if (foundIdx !== -1) {
-                /**
-                 * Karena enkripsi menggunakan modulo, dekripsi mengembalikan 
-                 * ke urutan alfabet dasar (0-25) yang pertama kali cocok.
-                 * Contoh: Jika 'E' ada di indeks ke-2 mapping, maka hasilnya 'C' (indeks 2).
-                 */
+                // Mengonversi indeks yang ditemukan kembali ke huruf alfabet
                 res += String.fromCharCode(foundIdx + 65);
             } else {
-                // Jika karakter tidak ditemukan di mapping, biarkan tetap
+                // Jika karakter tidak ada dalam mapping, karakter asli dipertahankan
                 res += char;
             }
         }
